@@ -2,17 +2,17 @@ import RPi.GPIO as GPIO
 import time
 import sys
 import subprocess
+import json
 
 #GPIO Setup
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
-#Useful Lists
-pins = ['20','26','19','13','6','5']
-outletGroups = ['1','2','3','4','5','6']
-feedPins = ['5','6']
-feedPinStatus = []
-pinStatus = []
+#Pin Keeping
+feedGroups = ['Outlet Group 5','Outlet Group 6']
+outlets = '[{"name": "Output Group 1","pin": "20","status": "","feed": ""},{"name": "Output Group 2","pin": "26","status": "","feed": ""},{"name": "Output Group 3","pin": "19","status": "","feed": ""},{"name": "Output Group 4","pin": "14","status": "","feed": ""},{"name": "Output Group 5","pin": "6","status": "","feed": "yes"},{"name": "Output Group 6","pin": "5","status": "","feed": "yes"}]'
+outlets = json.loads(outlets)
+
 
 #Help
 if sys.argv[1] == "help":
@@ -30,33 +30,28 @@ if sys.argv[1] == "help":
 
 #Print Status
 if sys.argv[1] == "status":
-	print "#######################<br>"
-	for pin in pins:
-		ps = subprocess.Popen(('gpio', '-g', 'read', pin), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True)
-		output = ps.communicate()
-		outputTrans = str(output)
-		outputTrans = outputTrans.translate(None,"\n',N('on\e) ")
-		pinStatus.append(outputTrans)
-	for outletGroup, pin in zip(outletGroups,pinStatus):
-		if pin == '1':	
-			print "Outlet group "+outletGroup+": Off<br>"
-		if pin == '0':
-			print "Outlet group "+outletGroup+": On<br>"
-	print "#######################<br><br>"
-	print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-	print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
+    print "#######################<br>"
+    for outlet in outlets:
+        ps = subprocess.Popen(('gpio', '-g', 'read', outlet['pin']), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True)
+        output = str(ps.communicate())
+        output = output.translate(None,"\n',N('on\e) ")
+        if output == "1":
+            outlet['status'] = "Off"
+        if output == "0":
+            outlet['status'] = "On"
+    for outlet in outlets:
+        print outlet['name']+": "+outlet['status']+"<br>"
+    print "#######################<br><br>"
+    print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
+    print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
 
 #All on.
 if sys.argv[1] == "on":
 	try:
 		print "#######################<br>"
-		GPIO.setup(20, GPIO.OUT)
-		GPIO.setup(26, GPIO.OUT)
-		GPIO.setup(19, GPIO.OUT)
-		GPIO.setup(13, GPIO.OUT)
-		GPIO.setup(6, GPIO.OUT)
-		GPIO.setup(5, GPIO.OUT)
-		print "All outlet groups on...<br>"
+		for outlet in outlets:
+			GPIO.setup(int(outlet['pin']), GPIO.OUT)
+		print "All outlet groups are now on...<br>"
 		print "#######################<br><br>"
 		print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
 		print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
@@ -67,41 +62,33 @@ if sys.argv[1] == "on":
 if sys.argv[1] == "off":
 	try:
 		print "#######################<br>"
-		GPIO.setup(20, GPIO.IN)
-		GPIO.setup(26, GPIO.IN)
-		GPIO.setup(19, GPIO.IN)
-		GPIO.setup(13, GPIO.IN)
-		GPIO.setup(6, GPIO.IN)
-		GPIO.setup(5, GPIO.IN)
-		print "All outlet groups off...<br>"
+		for outlet in outlets:
+			GPIO.setup(int(outlet['pin']), GPIO.IN)
+		print "All outlet groups are now off...<br>"
 		print "#######################<br><br>"
 		print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
 		print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
 	except:
 		print "Error turning off all outlet groups."
-
 #Feed
 if sys.argv[1] == "feed":
 	print "#######################<br>"
-	for pin in feedPins:
-		ps = subprocess.Popen(('gpio', '-g', 'read', pin), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True)
-		output = ps.communicate()
-		outputTrans = str(output)
-		outputTrans = outputTrans.translate(None,"\n',N('on\e) ")
-		feedPinStatus.append(outputTrans)
-	for pin,status in zip(feedPins,feedPinStatus):
-		#print pin, status
-		if status == '1':
-		 	GPIO.setup(int(pin), GPIO.OUT)
-		 	print "Outlet group "+pin+" on.<br>"
-		if status == '0':
-		 	GPIO.setup(int(pin), GPIO.IN)
-		 	print "Outlet group "+pin+" off.<br>"
-	print "#######################<br><br>"
-	print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-	print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
-		
-		
+	for outlet in outlets:
+		ps = subprocess.Popen(('gpio', '-g', 'read', outlet['pin']), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True)
+		output = str(ps.communicate())
+		output = output.translate(None,"\n',N('on\e) ")
+		if output == "1":
+			outlet['status'] = "Off"
+		if output == "0":
+			outlet['status'] = "On"
+	for outlet in outlets:
+		if outlet['feed'] == "yes":
+			if outlet['status'] == "Off":
+				GPIO.setup(int(outlet['pin']), GPIO.OUT)
+				print outlet['name']+" is now: "+outlet['status']+"<br>"
+			if outlet['status'] == "On":
+				print outlet['name']+" is now: "+outlet['status']+"<br>"
+				GPIO.setup(int(outlet['pin']), GPIO.IN)
 
 #Outlet group control.
 if sys.argv[1] == "outlet-control":	

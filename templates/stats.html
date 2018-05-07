@@ -85,41 +85,19 @@
                                 <thead>
                                     <tr>
                                         <th>Outlet Group</th>
-                                        <th>Use</th>
+                                        <th>Pin</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for outlet in outlets %}
                                     <tr class="odd gradeX">
-                                        <td>1</td>
-                                        <td>Protein Skimmer</td>
-                                        <td class="center">4</td>
+                                    <td>{{outlet.name}}</td>
+                                    <td class="center">{{outlet.pin}}</td>
+                                    <td>{{outlet.status}}</td>
+                                    {% endfor %}
                                     </tr>
-                                    <tr class="even gradeC">
-                                        <td>2</td>
-                                        <td>Return Pump</td>
-                                        <td class="center">5</td>
-                                    </tr>
-                                    <tr class="odd gradeA">
-                                        <td>3</td>
-                                        <td>Refugium Light</td>
-                                        <td class="center">5.5</td>
-                                    </tr>
-                                    <tr class="even gradeA">
-                                        <td>4</td>
-                                        <td>Power Head Controller</td>
-                                        <td class="center">6</td>
-                                    </tr>
-                                    <tr class="odd gradeA">
-                                        <td>5</td>
-                                        <td>N/A</td>
-                                        <td class="center">7</td>
-                                    </tr>
-                                    <tr class="even gradeA">
-                                        <td>6</td>
-                                        <td>N/A</td>
-                                        <td class="center">6</td>
-                                    </tr>
+                                    
                                 </tbody>
                             </table>
                             <!-- /.table-responsive -->
@@ -164,6 +142,4 @@
     </script>
 
 </body>
-
 </html>
-
