@@ -1,3 +1,4 @@
+
 # Reef Tank Power Control
 
 This is a quick project I put together to control an 8 channel power relay conneced to a Raspberry Pi. I plan to add support for temprature sensors, ph probes, light timers, and more. 
@@ -22,4 +23,7 @@ or
 export FLASK_APP="app.py"
 python -m flask run --host=0.0.0.0
 ```
-
+### Notes
+* As stated before I am using Supervisor to run Flask. My ```supervisord.conf``` file is included under [misc](https://github.com/ferrellw/ReefTankPowerControl/tree/master/misc/supervisord).
+* I am using [amazon-dash](https://github.com/Nekmo/amazon-dash) for an IoT Amazon dash button to control outlet groups. This config is also included in [misc](https://github.com/ferrellw/ReefTankPowerControl/tree/master/misc/amazon-dash).
+* In the even of a power failure the outlets default to on. I am using ```systemd``` for this. The unit file and script to power on the outlets is once again, included in [misc](https://github.com/ferrellw/ReefTankPowerControl/tree/master/misc/systemd).

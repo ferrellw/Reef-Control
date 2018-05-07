@@ -1,0 +1,18 @@
+# Put this file in /etc/systemd/system
+# then run sudo systemctl enable powercontrol-coms.service 
+# on startup, GPIO signal will go high
+# on shutdown/reboot, GPIO signal will go low
+ 
+[Unit]
+Description=Reef Tank Power Controller Startup
+Before=network.target
+After=umount.target
+ 
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python /etc/init.d/power-startup.py
+ExecStop=/usr/bin/python /etc/init.d/power-startup.py
+RemainAfterExit=yes
+ 
+[Install]
+WantedBy=multi-user.target
