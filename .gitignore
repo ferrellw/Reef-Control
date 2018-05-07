@@ -1,0 +1,3 @@
+app-stderr.log
+app-stdout.log
+*.pyc
