@@ -1,8 +1,8 @@
 import RPi.GPIO as GPIO
 import time
 GPIO.setwarnings(False)
+GPIO.setmode(GPIO,BCM)
 print "Turning off outlets..."
-GPIO.setmode(GPIO.BCM)
 GPIO.setup(20, GPIO.IN)
 GPIO.setup(26, GPIO.IN)
 GPIO.setup(19, GPIO.IN)
