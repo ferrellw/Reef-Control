@@ -11,7 +11,7 @@ GPIO.setmode(GPIO.BCM)
 
 
 #Pin Keeping
-outlets = '[{"name": "Outlet Group 1","pin": "13","status": "","feed": ""},{"name": "Outlet Group 2","pin": "19","status": "","feed": ""},{"name": "Outlet Group 3","pin": "26","status": "","feed": ""},{"name": "Outlet Group 4","pin": "21","status": "","feed": ""},{"name": "Outlet Group 5","pin": "20","status": "","feed": "yes"},{"name": "Outlet Group 6","pin": "16","status": "","feed": "yes"}]'
+outlets = '[{"name": "Outlet Group 1","pin": "13","status": "","feed": "","form": "og1","desc":"Free"},{"name": "Outlet Group 2","pin": "19","status": "","feed": "","form": "og2","desc":"Refugium Light"},{"name": "Outlet Group 3","pin": "26","status": "","feed": "","form": "og3","desc":"Power Head Controller"},{"name": "Outlet Group 4","pin": "21","status": "","feed": "","form": "og4","desc":"Cooling Fan"},{"name": "Outlet Group 5","pin": "20","status": "","feed": "yes","form": "og5","desc":"Auto Top Off"},{"name": "Outlet Group 6","pin": "16","status": "","feed": "yes","form": "og6","desc":"Return Pump, Protein Skimmer"}]'
 outlets = json.loads(outlets)
 
 

@@ -54,6 +54,7 @@
                                 <thead>
                                     <tr>
                                         <th>Outlet Group</th>
+                                        <th>Description</th>
                                         <th>Pin</th>
                                         <th>Status</th>
                                     </tr>
@@ -62,6 +63,7 @@
                                     {% for outlet in outlets %}
                                     <tr class="odd gradeX">
                                         <td><a href="#{{outlet.name}}">{{outlet.name}}</a></td>
+                                        <td>{{outlet.desc}}</td>
                                         <td class="center">{{outlet.pin}}</td>
                                         <td>{{outlet.status}}</td>
                                         {% endfor %}
@@ -133,7 +135,7 @@
                     {% for outlet in outlets %}
                     <div id="{{outlet.name}}">
                         <div class="panel panel-default">
-                            <div class="panel-heading">{{outlet.name}}</div>
+                            <div class="panel-heading">{{outlet.desc}}</div>
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-lg-6">

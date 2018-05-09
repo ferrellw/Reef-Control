@@ -8,13 +8,14 @@ from flask import Flask, render_template, request, url_for, redirect
 scripts = (os.getcwd()+"/scripts/")
 
 app = Flask(__name__)
+    
 
 #Main page.
 @app.route('/')
 def index():
     ##Lets get the status for the outlets.
     #Define outlets. This list should match what is in power.py.
-    outlets = '[{"name": "Outlet Group 1","pin": "13","status": "","feed": "","form": "og1"},{"name": "Outlet Group 2","pin": "19","status": "","feed": "","form": "og2"},{"name": "Outlet Group 3","pin": "26","status": "","feed": "","form": "og3"},{"name": "Outlet Group 4","pin": "21","status": "","feed": "","form": "og4"},{"name": "Outlet Group 5","pin": "20","status": "","feed": "yes","form": "og5"},{"name": "Outlet Group 6","pin": "16","status": "","feed": "yes","form": "og6"}]'
+    outlets = '[{"name": "Outlet Group 1","pin": "13","status": "","feed": "","form": "og1","desc":"Free"},{"name": "Outlet Group 2","pin": "19","status": "","feed": "","form": "og2","desc":"Refugium Light"},{"name": "Outlet Group 3","pin": "26","status": "","feed": "","form": "og3","desc":"Power Head Controller"},{"name": "Outlet Group 4","pin": "21","status": "","feed": "","form": "og4","desc":"Cooling Fan"},{"name": "Outlet Group 5","pin": "20","status": "","feed": "yes","form": "og5","desc":"Auto Top Off"},{"name": "Outlet Group 6","pin": "16","status": "","feed": "yes","form": "og6","desc":"Return Pump, Protein Skimmer"}]'
     outlets = json.loads(outlets)
     #Loop over each item in the list.
     for outlet in outlets:
@@ -38,7 +39,7 @@ def index():
 def pi():
     ##Lets get the status for the outlets.
     #Define outlets. This list should match what is in power.py.
-    outlets = '[{"name": "Outlet Group 1","pin": "13","status": "","feed": "","form": "og1"},{"name": "Outlet Group 2","pin": "19","status": "","feed": "","form": "og2"},{"name": "Outlet Group 3","pin": "26","status": "","feed": "","form": "og3"},{"name": "Outlet Group 4","pin": "21","status": "","feed": "","form": "og4"},{"name": "Outlet Group 5","pin": "20","status": "","feed": "yes","form": "og5"},{"name": "Outlet Group 6","pin": "16","status": "","feed": "yes","form": "og6"}]'
+    outlets = '[{"name": "Outlet Group 1","pin": "13","status": "","feed": "","form": "og1","desc":"Free"},{"name": "Outlet Group 2","pin": "19","status": "","feed": "","form": "og2","desc":"Refugium Light"},{"name": "Outlet Group 3","pin": "26","status": "","feed": "","form": "og3","desc":"Power Head Controller"},{"name": "Outlet Group 4","pin": "21","status": "","feed": "","form": "og4","desc":"Cooling Fan"},{"name": "Outlet Group 5","pin": "20","status": "","feed": "yes","form": "og5","desc":"Auto Top Off"},{"name": "Outlet Group 6","pin": "16","status": "","feed": "yes","form": "og6","desc":"Return Pump, Protein Skimmer"}]'
     outlets = json.loads(outlets)
     #Loop over each item in the list.
     for outlet in outlets:
@@ -96,4 +97,4 @@ def ogcontrol():
     return redirect("/", code=302)
 
 if __name__ == "__main__":
-    	app.run(host='0.0.0.0',port=5000,debug=False)
+    	app.run(host='0.0.0.0',port=80,debug=True)
