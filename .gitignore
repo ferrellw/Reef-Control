@@ -3,3 +3,4 @@ app-stdout.log
 *.pyc
 temp-stderr.log
 static/temp.txt
+logs

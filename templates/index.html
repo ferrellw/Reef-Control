@@ -83,16 +83,12 @@
                                         document.getElementById("temp"),
                                         "{{ url_for('static',filename='temp.txt') }}",
                                         {
-                                        //rollPeriod: 1,
-                                        //showRoller: false,
-                                        //title: 'Sensor 2',
+                                        rollPeriod: 20,
+                                        showRoller: true,
                                         ylabel: 'Temperature (F)',
                                         showRangeSelector: true,
-                                        // drawPoints: true,
-                                        // pointSize: 10,
-                                        //legend: 'always'
-                                        strokeWidth: 3,
-                                    }
+                                        strokeWidth: 2,
+                                        }
                                     );
                                 </script>
                             </div>
