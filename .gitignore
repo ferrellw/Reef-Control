@@ -2,5 +2,4 @@ app-stderr.log
 app-stdout.log
 *.pyc
 temp-stderr.log
-combi.txt
-static/combi.txt
+static/temp.txt
