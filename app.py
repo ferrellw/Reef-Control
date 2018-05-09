@@ -1,57 +1,65 @@
 import sys
 import subprocess
+import json
 import os
 from flask import Flask, render_template, request, url_for, redirect
-import json
+
+#Location of main script, power.py
 scripts = (os.getcwd()+"/scripts/")
 
 app = Flask(__name__)
 
+#Main page.
 @app.route('/')
 def index():
-    return render_template('index.html')
-
-@app.route('/stats/')
-def stats():
-    outlets = '[{"name": "Output Group 1","pin": "20","status": "","feed": ""},{"name": "Output Group 2","pin": "26","status": "","feed": ""},{"name": "Output Group 3","pin": "19","status": "","feed": ""},{"name": "Output Group 4","pin": "13","status": "","feed": ""},{"name": "Output Group 5","pin": "6","status": "","feed": "yes"},{"name": "Output Group 6","pin": "5","status": "","feed": "yes"}]'
+    ##Lets get the status for the outlets.
+    #Define outlets. This list should match what is in power.py.
+    outlets = '[{"name": "Outlet Group 1","pin": "13","status": "","feed": "","form": "og1"},{"name": "Outlet Group 2","pin": "19","status": "","feed": "","form": "og2"},{"name": "Outlet Group 3","pin": "26","status": "","feed": "","form": "og3"},{"name": "Outlet Group 4","pin": "21","status": "","feed": "","form": "og4"},{"name": "Outlet Group 5","pin": "20","status": "","feed": "yes","form": "og5"},{"name": "Outlet Group 6","pin": "16","status": "","feed": "yes","form": "og6"}]'
     outlets = json.loads(outlets)
+    #Loop over each item in the list.
     for outlet in outlets:
+        #Get the status of the GPIO pin for each outlet.
         ps = subprocess.Popen(('gpio', '-g', 'read', outlet['pin']), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True)
         output = str(ps.communicate())
+        #Output is not boolean. Lets fix that.
         output = output.translate(None,"\n',N('on\e) ")
+        #Update the list to reflect status of outlet.
         if output == "1":
             outlet['status'] = "Off"
+            outlet['selected'] = "selected"
         if output == "0":
             outlet['status'] = "On"
-    return render_template('stats.html',outlets=outlets)
+        #Now that we have the status of the outlets, present to the template for rendering.
+    return render_template('index.html',outlets=outlets)
 
-@app.route('/status/', methods=['POST'])
-def status():
-    cmd = ["python",scripts+"/power.py", "status"]
-    p = subprocess.Popen(cmd, stdout = subprocess.PIPE,stderr=subprocess.PIPE,stdin=subprocess.PIPE)
-    out,err = p.communicate()
-    return out
+
+# @app.route('/status/', methods=['POST'])
+# def status():
+#     cmd = ["python",scripts+"/power.py", "status"]
+#     p = subprocess.Popen(cmd, stdout = subprocess.PIPE,stderr=subprocess.PIPE,stdin=subprocess.PIPE)
+#     out,err = p.communicate()
+#     return out
 
 @app.route('/on/', methods=['POST'])
 def on():
     cmd = ["python",scripts+"/power.py", "on"]
     p = subprocess.Popen(cmd, stdout = subprocess.PIPE,stderr=subprocess.PIPE,stdin=subprocess.PIPE)
     out,err = p.communicate()
-    return out
+    return redirect("/", code=302)
 
 @app.route('/off/', methods=['POST'])
 def off():
     cmd = ["python",scripts+"/power.py", "off"]
     p = subprocess.Popen(cmd, stdout = subprocess.PIPE,stderr=subprocess.PIPE,stdin=subprocess.PIPE)
     out,err = p.communicate()
-    return out
+    return redirect("/", code=302)
 
 @app.route('/feed/', methods=['POST'])
 def feed():
     cmd = ["python",scripts+"/power.py", "feed"]
     p = subprocess.Popen(cmd, stdout = subprocess.PIPE,stderr=subprocess.PIPE,stdin=subprocess.PIPE)
     out,err = p.communicate()
-    return out
+    return redirect("/", code=302)
 
 @app.route('/ogcontrol/', methods=['POST'])
 def ogcontrol():
@@ -61,7 +69,7 @@ def ogcontrol():
     cmd = ["python",scripts+"/power.py", "outlet-control", outletGroup, op]
     p = subprocess.Popen(cmd, stdout = subprocess.PIPE,stderr=subprocess.PIPE,stdin=subprocess.PIPE)
     out,err = p.communicate()
-    return out
+    return redirect("/", code=302)
 
 if __name__ == "__main__":
-    	app.run(host='0.0.0.0',port=5000,debug=True)
+    	app.run(host='0.0.0.0',port=80,debug=False)

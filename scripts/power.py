@@ -1,180 +1,119 @@
 import RPi.GPIO as GPIO
-import time
 import sys
+import time
 import subprocess
 import json
+
 
 #GPIO Setup
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
+
 #Pin Keeping
-feedGroups = ['Outlet Group 5','Outlet Group 6']
-outlets = '[{"name": "Output Group 1","pin": "20","status": "","feed": ""},{"name": "Output Group 2","pin": "26","status": "","feed": ""},{"name": "Output Group 3","pin": "19","status": "","feed": ""},{"name": "Output Group 4","pin": "13","status": "","feed": ""},{"name": "Output Group 5","pin": "6","status": "","feed": "yes"},{"name": "Output Group 6","pin": "5","status": "","feed": "yes"}]'
+outlets = '[{"name": "Outlet Group 1","pin": "13","status": "","feed": ""},{"name": "Outlet Group 2","pin": "19","status": "","feed": ""},{"name": "Outlet Group 3","pin": "26","status": "","feed": ""},{"name": "Outlet Group 4","pin": "21","status": "","feed": ""},{"name": "Outlet Group 5","pin": "20","status": "","feed": "yes"},{"name": "Outlet Group 6","pin": "16","status": "","feed": "yes"}]'
 outlets = json.loads(outlets)
 
 
-#Help
-if sys.argv[1] == "help":
-	print "\n"
-	print "Useage: outlet-control og1 on"
-	print "Useage: outlet-control og1 off"
-	print "\n"
-	print "feed - Turn off select pumps."
-	print "status - Shows status of all outlet groups."
-	print "on - Turns on all outlet groups."
-	print "off - Turns off all outlet groups"
-	print "outlet-control - Controls power functions of individual outlet groups."
-	print "\n"
+#Quick redirect after form submission. This should prolly be done in Flask (app.py) but I haven't looked into it yet.
+back = "<script type=\"text/javascript\">window.setTimeout('history.back();', 100);</script>"
 
 
-#Print Status
-if sys.argv[1] == "status":
-    print "#######################<br>"
-    for outlet in outlets:
-        ps = subprocess.Popen(('gpio', '-g', 'read', outlet['pin']), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True)
-        output = str(ps.communicate())
-        output = output.translate(None,"\n',N('on\e) ")
-        if output == "1":
-            outlet['status'] = "Off"
-        if output == "0":
-            outlet['status'] = "On"
-    for outlet in outlets:
-        print outlet['name']+": "+outlet['status']+"<br>"
-    print "#######################<br><br>"
-    print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-    print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
-
-#All on.
+#All on. Read from outlets list and turn on all outlets via pin.
 if sys.argv[1] == "on":
 	try:
-		print "#######################<br>"
 		for outlet in outlets:
 			GPIO.setup(int(outlet['pin']), GPIO.OUT)
-		print "All outlet groups are now on...<br>"
-		print "#######################<br><br>"
-		print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-		print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
+		print back
 	except:
 		print "Error turning on all outlet groups."
 
-#All off.
+
+#All off. Read from outlets list and turn off all outlets via pin.
 if sys.argv[1] == "off":
 	try:
-		print "#######################<br>"
 		for outlet in outlets:
 			GPIO.setup(int(outlet['pin']), GPIO.IN)
-		print "All outlet groups are now off...<br>"
-		print "#######################<br><br>"
-		print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-		print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
+		print back
 	except:
 		print "Error turning off all outlet groups."
-#Feed
+
+
+#Feed. Turn off defined outlets for feeding time. Read from outlets, get all status of all outlets
 if sys.argv[1] == "feed":
-	print "#######################<br>"
+	#Loop over items in outlets.
 	for outlet in outlets:
+		#Get GPIO pin status.
 		ps = subprocess.Popen(('gpio', '-g', 'read', outlet['pin']), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True)
 		output = str(ps.communicate())
+		#Output is not boolean. Lets fix that.
 		output = output.translate(None,"\n',N('on\e) ")
+		#Update the list to reflect status of outlet.
 		if output == "1":
 			outlet['status'] = "Off"
 		if output == "0":
 			outlet['status'] = "On"
+	#Once we have the status of all outlets we need to only action outlets defined as "feed".
 	for outlet in outlets:
-		if outlet['feed'] == "yes":
-			if outlet['status'] == "Off":
-				GPIO.setup(int(outlet['pin']), GPIO.OUT)
-				print outlet['name']+" is now: "+outlet['status']+"<br>"
-			if outlet['status'] == "On":
-				print outlet['name']+" is now: "+outlet['status']+"<br>"
-				GPIO.setup(int(outlet['pin']), GPIO.IN)
+	  	if outlet['feed'] == "yes":
+	  		#If the outlet is off, turn it on.
+	  		if outlet['status'] == "Off":
+	  			GPIO.setup(int(outlet['pin']), GPIO.OUT)
+	  		#If the outlet is on, turn it off.	
+	  		if outlet['status'] == "On":
+	  			GPIO.setup(int(outlet['pin']), GPIO.IN)
+	print back
 
-#Outlet group control.
+
+#Outlet group control. I call them groups but they are a single outlet with 2 receptacles. Exception to this is 5 and 6. These are defined as "feed" outlets. 
+#This should all be broken down to read from the outlets list vs manually defining each outlet group.
 if sys.argv[1] == "outlet-control":	
-	print "#######################<br>"
 	#Outlet 1
 	if sys.argv[2] == 'og1':
 		if sys.argv[3] == 'on':
-			GPIO.setup(20, GPIO.OUT)
-			print "Outlet group 1 is now: on<br>"
-			print "#######################<br><br>"
-			print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-			print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
-    
-		if sys.argv[3] == 'off':
-			GPIO.setup(20, GPIO.IN)
-			print "Outlet group 1 is now: off<br>"
-			print "#######################<br><br>"
-			print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-			print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
-	#Outlet 2
-	if sys.argv[2] == 'og2':
-		if sys.argv[3] == 'on':
-			GPIO.setup(26, GPIO.OUT)
-			print "Outlet group 2 is now: on<br>"
-			print "#######################<br><br>"
-			print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-			print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
-		if sys.argv[3] == 'off':
-			GPIO.setup(26, GPIO.IN)
-			print "Outlet group 2 is now: off<br>"
-			print "#######################<br><br>"
-			print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-			print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
-	#Outlet 3		
-	if sys.argv[2] == 'og3':
-		if sys.argv[3] == 'on':
-			GPIO.setup(19, GPIO.OUT)
-			print "Outlet group 3 is now: on<br>"
-			print "#######################<br><br>"
-			print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-			print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
-		if sys.argv[3] == 'off':
-			GPIO.setup(19, GPIO.IN)
-			print "Outlet group 3 is now: off<br>"
-			print "#######################<br><br>"
-			print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-			print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
-	#Outlet 4		
-	if sys.argv[2] == 'og4':
-		if sys.argv[3] == 'on':
 			GPIO.setup(13, GPIO.OUT)
-			print "Outlet group 4 is now: on<br>"
-			print "#######################<br><br>"
-			print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-			print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
+			print back
 		if sys.argv[3] == 'off':
 			GPIO.setup(13, GPIO.IN)
-			print "Outlet group 4 is now: off<br>"
-			print "#######################<br><br>"
-			print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-			print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"			
-	#Outlet 5		
+			print back
+	if sys.argv[2] == 'og2':
+		if sys.argv[3] == 'on':
+			GPIO.setup(19, GPIO.OUT)
+			
+			print back
+		if sys.argv[3] == 'off':
+			GPIO.setup(19, GPIO.IN)
+			print back	
+	if sys.argv[2] == 'og3':
+		if sys.argv[3] == 'on':
+			GPIO.setup(26, GPIO.OUT)
+			
+			print back
+		if sys.argv[3] == 'off':
+			GPIO.setup(26, GPIO.IN)
+			print back		
+	if sys.argv[2] == 'og4':
+		if sys.argv[3] == 'on':
+			GPIO.setup(21, GPIO.OUT)
+			print back
+		if sys.argv[3] == 'off':
+			GPIO.setup(21, GPIO.IN)
+			print back				
 	if sys.argv[2] == 'og5':
 		if sys.argv[3] == 'on':
-			GPIO.setup(6, GPIO.OUT)
-			print "Outlet group 5 is now: on<br>"
-			print "#######################<br><br>"
-			print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-			print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
+			GPIO.setup(20, GPIO.OUT)
+			GPIO.setup(16, GPIO.OUT)
+			print back
 		if sys.argv[3] == 'off':
-			GPIO.setup(6, GPIO.IN)
-			print "Outlet group 5 is now: off<br>"
-			print "#######################<br><br>"
-			print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-			print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"		
-	#Outlet 6		
+			GPIO.setup(20, GPIO.IN)
+			GPIO.setup(16, GPIO.IN)
+			print back			
 	if sys.argv[2] == 'og6':
 		if sys.argv[3] == 'on':
-			GPIO.setup(5, GPIO.OUT)
-			print "Outlet group 6 is now: on<br>"
-			print "#######################<br><br>"
-			print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-			print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
+			GPIO.setup(20, GPIO.OUT)
+			GPIO.setup(16, GPIO.OUT)
+			print back
 		if sys.argv[3] == 'off':
-			GPIO.setup(5, GPIO.IN)
-			print "Outlet group 6 is now: off<br>"
-			print "#######################<br><br>"
-			print "<button onclick='goBack()''>Go Back</button><script>function goBack() {window.history.back();}</script>"
-			print "<script type=\"text/javascript\">window.setTimeout('history.back();', 5000);</script>"
+			GPIO.setup(20, GPIO.IN)
+			GPIO.setup(16, GPIO.IN)
+			print back
