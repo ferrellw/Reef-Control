@@ -6,6 +6,7 @@ sys.path.insert(0, '/home/pi/reef-controller/reefcontrol')
 import reefcontrol
 
 
+
 #Location of main script, power.py
 scripts = (os.getcwd()+"/scripts/")
 static = (os.getcwd()+"/static/")
@@ -13,19 +14,27 @@ static = (os.getcwd()+"/static/")
 
 app = Flask(__name__)
 
+
 #Read config file to get outlet info.
-with open('config.json') as json_config:
-    outlets = json.load(json_config)
+with open('outlets.json') as json_outlets:
+    outlets = json.load(json_outlets)
+
+
+#Read sensor config file to get sensor info.
+with open('sensors.json') as json_sensors:
+    sensors = json.load(json_sensors)
+
 
 #Main page.
 @app.route('/')
 def index():
+    coolingStatus = reefcontrol.coolingStatus(sensors)
+    for sensor in sensors:
+        sensor['temp'] = reefcontrol.getTemp(sensor['address'],sensor['correction'])
+        sensor['tempavg'] = reefcontrol.getTempAvg(static+'temp.txt',int(sensor['csvid']),sensor['correction'])
     outletStatus = reefcontrol.outletStatus(outlets)
-    temp1 = reefcontrol.getTemp('0317200b1bff')
-    temp2 = reefcontrol.getTemp('0417207e4eff')
-    temp1avg = reefcontrol.getTempAvg(static+'temp.txt',1,0.23)
-    temp2avg = reefcontrol.getTempAvg(static+'temp.txt',2,0.0)
-    return render_template('index.html',outletStatus=outletStatus,temp1=temp1,temp2=temp2,temp1avg=temp1avg,temp2avg=temp2avg)
+    return render_template('index.html',outletStatus=outletStatus,sensors=sensors, coolingStatus=coolingStatus)
+
 
 #Turn all outlets on.
 @app.route('/on/', methods=['POST'])
@@ -33,17 +42,20 @@ def on():
     reefcontrol.allOn(outlets)
     return redirect("/", code=302)
 
+
 #Turn all outlets off.
 @app.route('/off/', methods=['POST'])
 def off():
     reefcontrol.allOff(outlets)
     return redirect("/", code=302)
 
+
 #Turn off defined outlets for feeding time.
 @app.route('/feed/', methods=['POST'])
 def feed():
     reefcontrol.feed(outlets)
     return redirect("/", code=302)
+
 
 #Control individual outlets.
 @app.route('/outletControl/', methods=['POST'])
@@ -54,5 +66,6 @@ def outletControl():
     return redirect("/", code=302)
 
 
+#Run it!
 if __name__ == "__main__":
     	app.run(host='0.0.0.0',port=5000,debug=True)

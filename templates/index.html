@@ -13,12 +13,9 @@
     <link href="{{ url_for('static',filename='vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.js"></script>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/dygraph/2.1.0/dygraph.min.css" />
-    <meta http-equiv="cache-control" content="max-age=0">
-    <meta http-equiv="cache-control" content="no-cache">
-    <meta http-equiv="expires" content="-1">
-    <meta http-equiv="expires" content="Tue, 01 Jan 1980 11:00:00 GMT">
-    <meta http-equiv="pragma" content="no-cache">
-    <meta http-equiv="refresh" content="30">
+    <script> setInterval(function() {
+                  location.reload(true);
+                }, 180000); </script>
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -102,19 +99,32 @@
                         <div class="panel panel-primary">
                             <div class="panel-heading">Current Temperature</div>
                             <div class="panel-body">
-                                Sensor 1: {{temp1}}
+                                {% for sensor in sensors %}
+                                {{sensor.name}}: {{sensor.temp}}
                                 <br><br>
-                                Sensor 2: {{temp2}}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">Average Temperature</div>
+                            <div class="panel-body">
+                                {% for sensor in sensors %}
+                                {{sensor.name}}: {{sensor.tempavg}}
+                                <br><br>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
                                         <div class="col-lg-6">
                         <div class="panel panel-primary">
-                            <div class="panel-heading">Average Temperature</div>
+                            <div class="panel-heading">Cooling Status</div>
                             <div class="panel-body">
-                                Sensor 1: {{temp1avg}}
+                                {% for sensor in coolingStatus %}
+                                {{sensor.name}}: {{sensor.coolingStatus}}
                                 <br><br>
-                                Sensor 2: {{temp2avg}}
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -155,7 +165,7 @@
                     {% for outlet in outletStatus %}
                     <div id="{{outlet.name}}">
                         <div class="panel panel-primary">
-                            <div class="panel-heading">{{outlet.desc}}</div>
+                            <div class="panel-heading">{{outlet.name}} - {{outlet.desc}}</div>
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-lg-6">

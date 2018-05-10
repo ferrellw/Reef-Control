@@ -11,7 +11,7 @@ GPIO.setmode(GPIO.BCM)
 
 
 #Read from CSV file to get temperature average. 
-def getTempAvg(file,sensor,calibration):
+def getTempAvg(file,sensor,correction):
 	avg = 0
 	summation = 0
 	rowCount = 0
@@ -25,19 +25,21 @@ def getTempAvg(file,sensor,calibration):
 				rowCount += 1
 			csvfile.close()
 			avg = summation / rowCount
-			avg = avg - calibration
+			avg = avg - correction
 			avg = str("%.2f" % avg)
 			return avg
 	except:
 		return "Error retrieving temperature average for:",sensor
 
+
 #Get temperature by sensor address.
-def getTemp(id):
+def getTemp(address,correction):
 	try:
-		sensor = DS18B20(str(id))
-		return str("%.2f" % sensor.get_temperature(DS18B20.DEGREES_F))
+		sensor = DS18B20(str(address))
+		return str("%.2f" % (sensor.get_temperature(DS18B20.DEGREES_F) - correction))
 	except:
 		return "Error retrieving temperature." 
+
 
 #Read from user supplied outlet list and get the status of each outlet.
 def outletStatus(outletList):
@@ -55,6 +57,7 @@ def outletStatus(outletList):
 	except:
 		return "Error getting outlet status."
 
+
 #Turn all outlets on.
 def allOn(outletList):
 	try:
@@ -64,6 +67,7 @@ def allOn(outletList):
 	except:
 		return "Error turning on all outlets."
 
+
 #Turn all outlets off.
 def allOff(outletList):
 	try:
@@ -72,6 +76,7 @@ def allOff(outletList):
 		return "All outlets off."
 	except:
 		return "Error turning off all outlets."	
+
 
 #Turn off defined outlets for feeding time.
 def feed(outletList):
@@ -94,6 +99,7 @@ def feed(outletList):
 	except:
 		return "Error turning off outlets for feeding."
 
+
 #Control individual outlets.
 def outletControl(action,pin):
 	try:
@@ -104,3 +110,21 @@ def outletControl(action,pin):
 		return "Outlet is now ",action
 	except:
 		return "Error turning off outlet."
+
+
+#Turn off defined outlets for feeding time.
+def coolingStatus(sensors):
+	try:
+		for sensor in sensors:
+			#print sensor['coolingpin']
+			ps = subprocess.Popen(('gpio', '-g', 'read', str(sensor['coolingpin'])), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True)
+			output = str(ps.communicate())
+			output = output.translate(None,"\n',N('on\e) ")
+
+			if output == "1":
+				sensor['coolingStatus'] = "Off"
+			if output == "0":
+				sensor['coolingStatus'] = "On"
+		return sensors
+	except:
+		return "Error retrieving cooling status."

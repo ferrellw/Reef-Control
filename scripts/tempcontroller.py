@@ -1,48 +1,57 @@
 from ds18b20 import DS18B20
 import time
+import datetime
+import os.path
+import json
 import RPi.GPIO as GPIO
 
 
-#GPIO setup
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
+#Read config file to get outlet info.
+try:
+	with open(os.path.abspath(os.path.join(os.getcwd(), os.pardir))+"/sensors.json") as json_sensors:
+		sensors = json.load(json_sensors)
+except:
+	print "Failed to load sensor json config file."
 
 
-#Sensor deffinition.
-sensor1 = DS18B20('0317200b1bff')
-sensor2 = DS18B20('0417207e4eff')
+#GPIO setup.
+try:
+	GPIO.setwarnings(False)
+	GPIO.setmode(GPIO.BCM)
+except:
+	print "Failed to setup GPIO."
 
 
-#Correct temprature difference between sensors.
-calibration = float(0.23)
-
-
-#Set thresholds
-threshold = float(76.5)
-
-
-#Pins
-pin = 21
-
-
-#Loop so we are always running.
-while True:
+#Control cooling fans.
+def temperatureController(sensors):
 	try:
-		#Define temp vars for later use.
-		temp1 = sensor1.get_temperature(DS18B20.DEGREES_F) - calibration
-		temp2 = sensor2.get_temperature(DS18B20.DEGREES_F)
-		#Compare reading of both sensors to threshold. If either are over, turn on the outlet.
-		if (temp1 >= threshold) or (temp2 >= threshold):
-			print "Temp is above threshold of: "+str(threshold)+". Temp: "+str(temp1)+","+str(temp2)
-			GPIO.setup(pin, GPIO.OUT)
-			#Lets sleep for 3 min to let the cooling action happening. This is so the realy isnt triggered every 15 seconds.
-			time.sleep(180)
-		#If we are under the threshold turn off the outlet. 		
+		temps = []
+		for sensor in sensors:
+			temps.append(DS18B20(str(sensor['address'])).get_temperature(DS18B20.DEGREES_F) - sensor['correction'])
+			threshold = sensor['threshold']
+		if (temps[0] >= threshold) or (temps[1] >= threshold):
+			for coolingpin in sensors:
+				GPIO.setup(int(sensor['coolingpin']), GPIO.OUT)
+				return "Temperature above threshold.",temps
+				time.sleep(180)
 		else:
-			print "Temp is below threshold of: "+str(threshold)+". Temp: "+str(temp1)+","+str(temp2)
-			GPIO.setup(pin, GPIO.IN)
-		time.sleep(15)
+			for coolingpin in sensors:
+				GPIO.setup(int(sensor['coolingpin']), GPIO.IN)
+				return "Temperature below threshold of",threshold,temps
 	except KeyboardInterrupt:
-		break
+		quit()
 	except:
+		return "Some sort of error. Continuing..."
 		pass
+
+
+#Main loop.
+def main():
+	while True:
+		print temperatureController(sensors)
+		time.sleep(5)
+
+
+#Run it!
+if __name__ == "__main__":
+	main()
