@@ -19,7 +19,7 @@ sensor2 = DS18B20('0417207e4eff')
 
 
 #Correct temprature difference between sensors.
-calibration = float(0.3)
+calibration = float(0.25)
 
 
 #Loop so we are always running.

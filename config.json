@@ -1,0 +1,37 @@
+[{
+	"status": "",
+	"feed": "",
+	"name": "Outlet Group 1",
+	"pin": "13",
+	"desc": "Free"
+}, {
+	"status": "",
+	"feed": "",
+	"name": "Outlet Group 2",
+	"pin": "19",
+	"desc": "Refugium Light"
+}, {
+	"status": "",
+	"feed": "",
+	"name": "Outlet Group 3",
+	"pin": "26",
+	"desc": "Power Head Controller"
+}, {
+	"status": "",
+	"feed": "",
+	"name": "Outlet Group 4",
+	"pin": "21",
+	"desc": "Cooling Fan"
+}, {
+	"status": "",
+	"feed": "yes",
+	"name": "Outlet Group 5",
+	"pin": "20",
+	"desc": "Auto Top Off"
+}, {
+	"status": "",
+	"feed": "yes",
+	"name": "Outlet Group 6",
+	"pin": "16",
+	"desc": "Return Pump, Protein Skimmer"
+}]

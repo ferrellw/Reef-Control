@@ -14,11 +14,15 @@ sensor2 = DS18B20('0417207e4eff')
 
 
 #Correct temprature difference between sensors.
-calibration = float(0.3)
+calibration = float(0.23)
 
 
 #Set thresholds
 threshold = float(76.5)
+
+
+#Pins
+pin = 21
 
 
 #Loop so we are always running.
@@ -30,13 +34,13 @@ while True:
 		#Compare reading of both sensors to threshold. If either are over, turn on the outlet.
 		if (temp1 >= threshold) or (temp2 >= threshold):
 			print "Temp is above threshold of: "+str(threshold)+". Temp: "+str(temp1)+","+str(temp2)
-			GPIO.setup(21, GPIO.OUT)
+			GPIO.setup(pin, GPIO.OUT)
 			#Lets sleep for 3 min to let the cooling action happening. This is so the realy isnt triggered every 15 seconds.
 			time.sleep(180)
 		#If we are under the threshold turn off the outlet. 		
 		else:
 			print "Temp is below threshold of: "+str(threshold)+". Temp: "+str(temp1)+","+str(temp2)
-			GPIO.setup(21, GPIO.IN)
+			GPIO.setup(pin, GPIO.IN)
 		time.sleep(15)
 	except KeyboardInterrupt:
 		break

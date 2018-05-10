@@ -4,4 +4,4 @@ devices:
   00:00:00:00:00:00:
     name: FishFeeder
     user: pi
-    cmd: python /home/pi/reef-controller/scripts/power.py feed
+    cmd: 'curl --data "action=on&pin=19" http://127.0.0.1:5000/feed/ &>/dev/null && exit'
