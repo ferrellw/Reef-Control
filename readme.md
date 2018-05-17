@@ -1,11 +1,9 @@
 
-# Reef Tank Power Control
 
-This is a quick project I put together to control an 8 channel power relay connected to a Raspberry Pi. This relay controls various aquarium equipment. The Pi is also monitoring temperature using DS18B20 probes. I plan to add support for ph probes, light timers, and more. 
+# Reef Control
 
-## Getting Started
+This is a quick project I put together to control an 8 channel power relay connected to a Raspberry Pi that control various aquarium equipment. It then ballooned into an ever-growing monitoring platform. Currently you can toggle and get the status of outlets, view temperatures and trends, view cooling status, and monitor your ATO (Auto Top Off) reservoir level. I plan to add support for ph probes, salinity probes, light timers, and more. 
 
-The files in this project will get you up and running with a web based portal where you can toggle and get the status of outlets, view temperatures and trends, view cooling status, and monitor your ATO (Auto Top Off) reservoir level.
 
 ## Prerequisites
 ### Build
