@@ -1,37 +1,43 @@
 [{
-	"status": "",
-	"feed": "",
 	"name": "Outlet 1",
+	"desc": "Free",
 	"pin": "13",
-	"desc": "Free"
-}, {
 	"status": "",
 	"feed": "",
+	"powerhead": ""
+}, {
 	"name": "Outlet 2",
+	"desc": "Free",
 	"pin": "19",
-	"desc": "Refugium Light"
-}, {
 	"status": "",
 	"feed": "",
+	"powerhead": ""
+}, {
 	"name": "Outlet 3",
+	"desc": "Power Head Controller",
 	"pin": "26",
-	"desc": "Power Head Controller"
-}, {
 	"status": "",
 	"feed": "",
+	"powerhead": "yes"
+}, {
 	"name": "Outlet 4",
+	"desc": "Cooling Fan",
 	"pin": "21",
-	"desc": "Cooling Fan"
-}, {
 	"status": "",
-	"feed": "yes",
+	"feed": "",
+	"powerhead": ""
+}, {
 	"name": "Outlet 5",
+	"desc": "Skimmer",
 	"pin": "20",
-	"desc": "Auto Top Off"
-}, {
 	"status": "",
 	"feed": "yes",
+	"powerhead": ""
+}, {
 	"name": "Outlet 6",
+	"desc": "Return Pump, Auto Top Off",
 	"pin": "16",
-	"desc": "Return Pump, Protein Skimmer"
+	"status": "",
+	"feed": "yes",
+	"powerhead": ""
 }]

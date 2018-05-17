@@ -4,3 +4,4 @@ app-stdout.log
 temp-stderr.log
 static/temp.txt
 logs
+test.py

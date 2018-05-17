@@ -1,0 +1,20 @@
+[{
+	"type": "Python",
+	"name": "tempcontroller.py",
+	"command": "python tempcontroller.py",
+	"pid": "",
+	"status": ""
+
+},{
+	"type": "Python",
+	"name": "templogger.py",
+	"command": "python templogger.py",
+	"pid": "",
+	"status": ""
+},{
+	"type": "Python",
+	"name": "amazon-dash",
+	"command": "/usr/bin/python /usr/local/bin/amazon-dash",
+	"pid": "",
+	"status": ""
+}]

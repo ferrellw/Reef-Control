@@ -1,0 +1,9 @@
+[{
+	"type": "ultrasonic",
+	"name": "ATO Reservoir",
+	"triggerpin": 18,
+	"echopin": 24,
+	"capacity": 39.5,
+	"uppercorrection": 6.5,
+	"percentfull": ""
+}]

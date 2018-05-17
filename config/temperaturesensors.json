@@ -1,0 +1,26 @@
+[{
+	"type": "temperature",
+	"name": "Sump",
+	"address": "0317200b1bff",
+	"temp": "",
+	"temperatureaverage": "",
+	"csvid": "1",
+	"appid": 0,
+	"temperaturecorrection": 0.7,
+	"temperaturethreshold": 77,
+	"pin": 21,
+	"pinstatus": ""
+
+}, {
+	"type": "temperature",
+	"name": "Overflow",
+	"address": "0417207e4eff",
+	"temperature": "",
+	"temperatureaverage": "",
+	"csvid": "2",
+	"appid": 1,
+	"temperaturecorrection": 1.04,
+	"temperaturethreshold": 77,
+	"pin": 21,
+	"pinstatus": ""
+}]
