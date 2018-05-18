@@ -2,7 +2,7 @@
 
 # Reef Control
 
-This is a quick project I put together to control an 8 channel power relay connected to a Raspberry Pi that control various aquarium equipment. It then ballooned into an ever-growing monitoring platform. Currently you can toggle and get the status of outlets, view temperatures and trends, view cooling status, and monitor your ATO (Auto Top Off) reservoir level. I plan to add support for ph probes, salinity probes, light timers, and more. 
+This is a quick project I put together to control an 8 channel power relay connected to a Raspberry Pi that control various aquarium equipment. It then ballooned into an ever-growing monitoring platform. Currently you can toggle and get the status of outlets, view temperatures and trends, view cooling status, view a live feed, and monitor your ATO (Auto Top Off) reservoir level. I plan to add support for ph probes, salinity probes, light timers, and more. 
 
 
 ## Prerequisites
@@ -14,6 +14,7 @@ Here are the parts used in my build.
 * 8 channel power relay: [Link](https://www.amazon.com/gp/product/B01HCFJC0Y/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1)
 * DS18B20 Sensor: [Link](https://www.amazon.com/gp/product/B01LY53CED/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1)
 * HC-SR04 Ultrasonic Sensor: [Link](https://www.amazon.com/gp/product/B01MA4O5G5/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1)
+# HD Pro Webcam C920: [Link](https://www.logitech.com/en-us/product/hd-pro-webcam-c920)
 
 Here are some links I used to help get my build completed.
 * Wiring a DS18B20 sensor: [Link](http://www.circuitbasics.com/raspberry-pi-ds18b20-temperature-sensor-tutorial/)
@@ -28,6 +29,8 @@ This app is written in Python and uses Flask with a few other modules that shoul
 ```
 pip install flask
 pip install DS18B20
+pip install numpy
+sudo apt-get install libopencv-dev python-opencv
 ```  
 #### Application
 This application relies on [Supervisor](http://supervisord.org/) to ensure processes are running and autostart with the OS. Install supervisor by running:
