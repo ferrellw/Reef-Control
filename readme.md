@@ -1,4 +1,4 @@
-
+  
 
 # Reef Control
 
@@ -14,7 +14,7 @@ Here are the parts used in my build.
 * 8 channel power relay: [Link](https://www.amazon.com/gp/product/B01HCFJC0Y/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1)
 * DS18B20 Sensor: [Link](https://www.amazon.com/gp/product/B01LY53CED/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1)
 * HC-SR04 Ultrasonic Sensor: [Link](https://www.amazon.com/gp/product/B01MA4O5G5/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1)
-# HD Pro Webcam C920: [Link](https://www.logitech.com/en-us/product/hd-pro-webcam-c920)
+* HD Pro Webcam C920: [Link](https://www.logitech.com/en-us/product/hd-pro-webcam-c920)
 
 Here are some links I used to help get my build completed.
 * Wiring a DS18B20 sensor: [Link](http://www.circuitbasics.com/raspberry-pi-ds18b20-temperature-sensor-tutorial/)
